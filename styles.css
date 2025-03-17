@@ -1,3 +1,4 @@
+/* styles.css */
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #3498db;
@@ -16,136 +17,40 @@
     --border-color: #34495e;
 }
 
-* {
-    box-sizing: border-box;
-    transition: background-color 0.3s, color 0.3s;
+/* Resto del CSS anterior... */
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
 }
 
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    margin: 0;
-    padding: 2rem;
-    background: var(--background);
-    color: var(--text-color);
-    line-height: 1.6;
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.app-header {
+.employee-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding: 1rem 0;
-    border-bottom: 2px solid var(--primary-color);
+    width: 100%;
 }
 
-.dashboard {
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.time-entry {
+    flex-grow: 1;
+    margin-right: 1rem;
 }
 
-.card {
-    background: var(--background);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-}
-
-.card-header {
+.time-details {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.form-grid {
-    display: grid;
     gap: 1rem;
+    margin-top: 0.5rem;
 }
 
-input, select, button {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-}
-
-button {
-    cursor: pointer;
-    font-weight: 500;
-    transition: transform 0.2s;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-.btn-primary {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-}
-
-.btn-secondary {
-    background: var(--border-color);
-    color: var(--text-color);
-    border: none;
-}
-
-.data-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.data-list li, .horario-item {
-    padding: 1rem;
-    margin: 0.5rem 0;
-    background: var(--background);
-    border-radius: 8px;
+.actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid var(--border-color);
+    gap: 0.5rem;
 }
 
-.report-container {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-}
-
-th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-th {
+.badge {
     background: var(--primary-color);
     color: white;
-}
-
-@media (max-width: 768px) {
-    body {
-        padding: 1rem;
-    }
-    
-    .dashboard {
-        grid-template-columns: 1fr;
-    }
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
 }
