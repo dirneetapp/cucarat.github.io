@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
@@ -18,7 +19,6 @@
         </header>
 
         <main class="dashboard">
-            <!-- Sección de Gestión -->
             <section class="management-section">
                 <article class="card">
                     <h2>👤 Nuevo Trabajador</h2>
@@ -44,12 +44,11 @@
                 </article>
             </section>
 
-            <!-- Sección de Datos -->
             <section class="data-section">
                 <article class="card">
                     <div class="card-header">
                         <h2>👥 Lista de Trabajadores</h2>
-                        <span class="badge">${trabajadores.length}</span>
+                        <span class="badge" id="contadorTrabajadores">0</span>
                     </div>
                     <ul id="listaTrabajadores" class="data-list"></ul>
                 </article>
@@ -57,13 +56,12 @@
                 <article class="card">
                     <div class="card-header">
                         <h2>📅 Registros Horarios</h2>
-                        <span class="badge">${horarios.length}</span>
+                        <span class="badge" id="contadorHorarios">0</span>
                     </div>
                     <div id="listaHorarios" class="data-list"></div>
                 </article>
             </section>
 
-            <!-- Informes y Exportación -->
             <section class="reports-section">
                 <article class="card">
                     <div class="card-header">
