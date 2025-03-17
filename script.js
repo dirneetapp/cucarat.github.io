@@ -1,232 +1,167 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const formTrabajador = document.getElementById("formTrabajador");
-  const formHorario = document.getElementById("formHorario");
-  const selectTrabajador = document.getElementById("trabajador");
-  const informeDiv = document.getElementById("informe");
-  const generarInformeBtn = document.getElementById("generarInforme");
-  const exportarPDFBtn = document.getElementById("exportarPDF");
-  const exportarExcelBtn = document.getElementById("exportarExcel");
-  const listaTrabajadores = document.getElementById("listaTrabajadores");
-  const listaHorarios = document.getElementById("listaHorarios");
+    const formTrabajador = document.getElementById("formTrabajador");
+    const formHorario = document.getElementById("formHorario");
+    const selectTrabajador = document.getElementById("trabajador");
+    const listaTrabajadores = document.getElementById("listaTrabajadores");
+    const listaHorarios = document.getElementById("listaHorarios");
+    const informeDiv = document.getElementById("informe");
+    const generarInformeBtn = document.getElementById("generarInforme");
+    const exportarPDFBtn = document.getElementById("exportarPDF");
+    const exportarExcelBtn = document.getElementById("exportarExcel");
 
-  let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
-  let horarios = JSON.parse(localStorage.getItem("horarios")) || [];
+    let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+    let horarios = JSON.parse(localStorage.getItem("horarios")) || [];
 
-  // Función para formatear la fecha y hora a dd/mm/yyyy HH:MM
-  function formatearFecha(fecha) {
-    const date = new Date(fecha);
-    const dia = String(date.getDate()).padStart(2, "0");
-    const mes = String(date.getMonth() + 1).padStart(2, "0"); // Los meses comienzan en 0
-    const anio = date.getFullYear();
-    const horas = String(date.getHours()).padStart(2, "0");
-    const minutos = String(date.getMinutes()).padStart(2, "0");
-    return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
-  }
+    // Función para calcular horas trabajadas
+    function calcularHoras(entrada, salida) {
+        const diff = new Date(salida) - new Date(entrada);
+        return (diff / (1000 * 60 * 60)).toFixed(2);
+    }
 
-  // Cargar trabajadores en el select y en la lista
-  function cargarTrabajadores() {
-    // Limpiar select y lista
-    selectTrabajador.innerHTML = '<option value="">Selecciona un trabajador</option>';
-    listaTrabajadores.innerHTML = "";
+    // Cargar trabajadores en select y lista
+    function cargarTrabajadores() {
+        selectTrabajador.innerHTML = '<option value="">Seleccione trabajador</option>';
+        listaTrabajadores.innerHTML = "";
+        
+        trabajadores.forEach((trabajador, index) => {
+            // Cargar en select
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = `${trabajador.nombre} ${trabajador.apellido}`;
+            selectTrabajador.appendChild(option);
+            
+            // Cargar en lista
+            const li = document.createElement("li");
+            li.innerHTML = `
+                ${trabajador.nombre} ${trabajador.apellido}
+                <button onclick="eliminarTrabajador(${index})">Eliminar</button>
+            `;
+            listaTrabajadores.appendChild(li);
+        });
+    }
 
-    // Cargar en el select
-    trabajadores.forEach((trabajador, index) => {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = `${trabajador.nombre} ${trabajador.apellido}`;
-      selectTrabajador.appendChild(option);
+    // Cargar horarios registrados
+    function cargarHorarios() {
+        listaHorarios.innerHTML = "";
+        horarios.forEach((horario, index) => {
+            const trabajador = trabajadores[horario.trabajadorIndex];
+            const div = document.createElement("div");
+            div.className = "horario-item";
+            div.innerHTML = `
+                <span>${trabajador.nombre} ${trabajador.apellido} - 
+                Entrada: ${horario.entrada} - Salida: ${horario.salida}</span>
+                <div>
+                    <button class="editar" onclick="editarHorario(${index})">Editar</button>
+                    <button class="eliminar" onclick="eliminarHorario(${index})">Eliminar</button>
+                </div>
+            `;
+            listaHorarios.appendChild(div);
+        });
+    }
+
+    // Generar informe en tabla
+    function generarInforme() {
+        informeDiv.innerHTML = "";
+        const tabla = document.createElement("table");
+        tabla.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Horas</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+
+        const tbody = tabla.querySelector("tbody");
+        const totales = {};
+
+        horarios.forEach(horario => {
+            const trabajador = trabajadores[horario.trabajadorIndex];
+            const nombre = `${trabajador.nombre} ${trabajador.apellido}`;
+            const horas = calcularHoras(horario.entrada, horario.salida);
+            
+            // Sumar horas por trabajador
+            totales[nombre] = (totales[nombre] || 0) + parseFloat(horas);
+
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${nombre}</td>
+                <td>${horario.entrada}</td>
+                <td>${horario.salida}</td>
+                <td>${horas}h</td>
+            `;
+            tbody.appendChild(fila);
+        });
+
+        // Añadir totales
+        Object.entries(totales).forEach(([nombre, total]) => {
+            const filaTotal = document.createElement("tr");
+            filaTotal.className = "total-row";
+            filaTotal.innerHTML = `
+                <td colspan="3">Total ${nombre}</td>
+                <td>${total.toFixed(2)}h</td>
+            `;
+            tbody.appendChild(filaTotal);
+        });
+
+        informeDiv.appendChild(tabla);
+    }
+
+    // Event Listeners
+    formTrabajador.addEventListener("submit", e => {
+        e.preventDefault();
+        trabajadores.push({
+            nombre: document.getElementById("nombre").value,
+            apellido: document.getElementById("apellido").value
+        });
+        localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+        cargarTrabajadores();
+        formTrabajador.reset();
     });
 
-    // Cargar en la lista
-    trabajadores.forEach((trabajador, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${trabajador.nombre} ${trabajador.apellido}`;
-
-      // Botón de eliminar
-      const botonEliminar = document.createElement("button");
-      botonEliminar.textContent = "Eliminar";
-      botonEliminar.addEventListener("click", () => eliminarTrabajador(index));
-
-      li.appendChild(botonEliminar);
-      listaTrabajadores.appendChild(li);
+    formHorario.addEventListener("submit", e => {
+        e.preventDefault();
+        const entrada = document.getElementById("entrada").value;
+        const salida = document.getElementById("salida").value;
+        
+        horarios.push({
+            trabajadorIndex: document.getElementById("trabajador").value,
+            entrada: new Date(entrada).toLocaleString(),
+            salida: new Date(salida).toLocaleString()
+        });
+        
+        localStorage.setItem("horarios", JSON.stringify(horarios));
+        cargarHorarios();
+        formHorario.reset();
     });
-  }
 
-  // Eliminar trabajador
-  function eliminarTrabajador(index) {
-    trabajadores.splice(index, 1); // Eliminar el trabajador del array
-    localStorage.setItem("trabajadores", JSON.stringify(trabajadores)); // Actualizar localStorage
-    cargarTrabajadores(); // Recargar la lista
-  }
+    generarInformeBtn.addEventListener("click", generarInforme);
 
-  // Cargar horarios registrados
-  function cargarHorarios() {
-    listaHorarios.innerHTML = "";
-    horarios.forEach((horario, index) => {
-      const trabajador = trabajadores[horario.trabajadorIndex];
-      const horarioItem = document.createElement("div");
-      horarioItem.className = "horario-item";
-      horarioItem.innerHTML = `
-        <span>${trabajador.nombre} ${trabajador.apellido} - Entrada: ${horario.entrada} - Salida: ${horario.salida}</span>
-        <div>
-          <button class="editar" onclick="editarHorario(${index})">Editar</button>
-          <button class="eliminar" onclick="eliminarHorario(${index})">Eliminar</button>
-        </div>
-      `;
-      listaHorarios.appendChild(horarioItem);
-    });
-  }
+    // Funciones globales
+    window.eliminarTrabajador = index => {
+        trabajadores.splice(index, 1);
+        localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+        cargarTrabajadores();
+    };
 
-  // Eliminar horario
-  window.eliminarHorario = function (index) {
-    horarios.splice(index, 1); // Eliminar el horario del array
-    localStorage.setItem("horarios", JSON.stringify(horarios)); // Actualizar localStorage
-    cargarHorarios(); // Recargar la lista
-  };
+    window.eliminarHorario = index => {
+        horarios.splice(index, 1);
+        localStorage.setItem("horarios", JSON.stringify(horarios));
+        cargarHorarios();
+    };
 
-  // Editar horario
-  window.editarHorario = function (index) {
-    const horario = horarios[index];
-    const trabajadorIndex = horario.trabajadorIndex;
-    const entrada = horario.entrada;
-    const salida = horario.salida;
+    window.editarHorario = index => {
+        const horario = horarios[index];
+        document.getElementById("trabajador").value = horario.trabajadorIndex;
+        document.getElementById("entrada").value = new Date(horario.entrada).toISOString().slice(0,16);
+        document.getElementById("salida").value = new Date(horario.salida).toISOString().slice(0,16);
+        eliminarHorario(index);
+    };
 
-    // Rellenar el formulario con los datos actuales
-    document.getElementById("trabajador").value = trabajadorIndex;
-    document.getElementById("entrada").value = entrada.replace(" ", "T");
-    document.getElementById("salida").value = salida.replace(" ", "T");
-
-    // Eliminar el horario actual
-    eliminarHorario(index);
-  };
-
-  // Registrar Trabajador
-  formTrabajador.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const nombre = document.getElementById("nombre").value;
-    const apellido = document.getElementById("apellido").value;
-    trabajadores.push({ nombre, apellido });
-    localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+    // Inicialización
     cargarTrabajadores();
-    formTrabajador.reset();
-  });
-
-  // Registrar Horario
-  formHorario.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const trabajadorIndex = document.getElementById("trabajador").value;
-    const entrada = document.getElementById("entrada").value;
-    const salida = document.getElementById("salida").value;
-    if (trabajadorIndex === "") return alert("Selecciona un trabajador");
-
-    // Convertir el formato de fecha y hora a dd/mm/yyyy HH:MM
-    const entradaFormateada = formatearFecha(entrada);
-    const salidaFormateada = formatearFecha(salida);
-
-    // Verificar si ya existe un registro para esa fecha y trabajador
-    const existeRegistro = horarios.some(
-      (horario) =>
-        horario.trabajadorIndex === trabajadorIndex &&
-        horario.entrada === entradaFormateada
-    );
-
-    if (existeRegistro) {
-      return alert("Ya existe un registro para este trabajador en la fecha seleccionada.");
-    }
-
-    horarios.push({ trabajadorIndex, entrada: entradaFormateada, salida: salidaFormateada });
-    localStorage.setItem("horarios", JSON.stringify(horarios));
     cargarHorarios();
-    formHorario.reset();
-  });
-
-  // Generar Informe Semanal
-  generarInformeBtn.addEventListener("click", () => {
-    informeDiv.innerHTML = "";
-    const informe = {};
-
-    // Agrupar horarios por trabajador y evitar duplicados
-    horarios.forEach((horario) => {
-      const trabajador = trabajadores[horario.trabajadorIndex];
-      const nombreCompleto = `${trabajador.nombre} ${trabajador.apellido}`;
-
-      if (!informe[nombreCompleto]) {
-        informe[nombreCompleto] = [];
-      }
-
-      // Evitar duplicados en el informe
-      const existeFecha = informe[nombreCompleto].some(
-        (registro) => registro.entrada === horario.entrada
-      );
-
-      if (!existeFecha) {
-        informe[nombreCompleto].push({ entrada: horario.entrada, salida: horario.salida });
-      }
-    });
-
-    // Mostrar el informe en la interfaz
-    for (const [nombre, registros] of Object.entries(informe)) {
-      const trabajadorDiv = document.createElement("div");
-      trabajadorDiv.innerHTML = `<h3>${nombre}</h3>`;
-      registros.forEach((registro) => {
-        trabajadorDiv.innerHTML += `<p>Entrada: ${registro.entrada} - Salida: ${registro.salida}</p>`;
-      });
-      informeDiv.appendChild(trabajadorDiv);
-    }
-  });
-
-  // Exportar a PDF
-  exportarPDFBtn.addEventListener("click", () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    let y = 10;
-    doc.setFontSize(18);
-    doc.text("Informe Semanal de Horarios", 10, y);
-    y += 10;
-
-    const informe = {};
-    horarios.forEach((horario) => {
-      const trabajador = trabajadores[horario.trabajadorIndex];
-      const nombreCompleto = `${trabajador.nombre} ${trabajador.apellido}`;
-      if (!informe[nombreCompleto]) informe[nombreCompleto] = [];
-      informe[nombreCompleto].push({ entrada: horario.entrada, salida: horario.salida });
-    });
-
-    for (const [nombre, registros] of Object.entries(informe)) {
-      doc.setFontSize(14);
-      doc.text(`Trabajador: ${nombre}`, 10, y);
-      y += 10;
-
-      registros.forEach((registro) => {
-        doc.setFontSize(12);
-        doc.text(`Entrada: ${registro.entrada} - Salida: ${registro.salida}`, 15, y);
-        y += 10;
-      });
-    }
-
-    doc.save("informe_horarios.pdf");
-  });
-
-  // Exportar a Excel
-  exportarExcelBtn.addEventListener("click", () => {
-    const informe = [];
-    horarios.forEach((horario) => {
-      const trabajador = trabajadores[horario.trabajadorIndex];
-      informe.push({
-        Trabajador: `${trabajador.nombre} ${trabajador.apellido}`,
-        Entrada: horario.entrada,
-        Salida: horario.salida,
-      });
-    });
-
-    const worksheet = XLSX.utils.json_to_sheet(informe);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Informe");
-    XLSX.writeFile(workbook, "informe_horarios.xlsx");
-  });
-
-  // Inicializar
-  cargarTrabajadores();
-  cargarHorarios();
 });

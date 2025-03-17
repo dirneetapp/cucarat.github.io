@@ -1,161 +1,113 @@
-/* Estilos generales */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 10px;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5;
 }
 
 .container {
-  max-width: 800px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 h1, h2 {
-  color: #333;
-  text-align: center;
+    color: #2c3e50;
 }
 
 form {
-  margin-bottom: 20px;
+    margin-bottom: 30px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 input, select, button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
 button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-  opacity: 0.8;
+    background-color: #2980b9;
 }
 
-/* Estilos para la lista de trabajadores */
 #listaTrabajadores {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 #listaTrabajadores li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  background-color: #f9f9f9;
-}
-
-#listaTrabajadores li button {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#listaTrabajadores li button:hover {
-  background-color: #c82333;
-}
-
-/* Estilos para la lista de horarios */
-#listaHorarios {
-  margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin: 10px 0;
+    background: #f8f9fa;
+    border-radius: 6px;
 }
 
 .horario-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin: 10px 0;
+    background: #f8f9fa;
+    border-radius: 6px;
 }
 
-.horario-item span {
-  flex: 1;
-}
-
-.horario-item button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.horario-item button.editar {
-  background-color: #ffc107;
-  color: white;
-}
-
-.horario-item button.eliminar {
-  background-color: #dc3545;
-  color: white;
-}
-
-.horario-item button:hover {
-  opacity: 0.8;
-}
-
-/* Estilos para el informe */
-#informe {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#informe h3 {
-  margin-top: 0;
-}
-
-/* Estilos responsivos para móviles */
-@media (max-width: 600px) {
-  h1 {
-    font-size: 24px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  input, select, button {
-    font-size: 14px;
-    padding: 8px;
-  }
-
-  .container {
-    padding: 10px;
-  }
-
-  .horario-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .horario-item button {
-    margin: 5px 0;
+/* Estilos para la tabla de informe */
+#informe table {
     width: 100%;
-  }
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#informe th, #informe td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#informe th {
+    background-color: #3498db;
+    color: white;
+}
+
+#informe tr:hover {
+    background-color: #f5f5f5;
+}
+
+.total-row {
+    font-weight: bold;
+    background-color: #ecf0f1;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    input, select, button {
+        padding: 10px;
+    }
+    
+    #informe table {
+        font-size: 14px;
+    }
 }
