@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const exportarPDFBtn = document.getElementById("exportarPDF");
   const exportarExcelBtn = document.getElementById("exportarExcel");
   const listaTrabajadores = document.getElementById("listaTrabajadores");
+  const listaHorarios = document.getElementById("listaHorarios");
 
   let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
   let horarios = JSON.parse(localStorage.getItem("horarios")) || [];
@@ -58,6 +59,47 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarTrabajadores(); // Recargar la lista
   }
 
+  // Cargar horarios registrados
+  function cargarHorarios() {
+    listaHorarios.innerHTML = "";
+    horarios.forEach((horario, index) => {
+      const trabajador = trabajadores[horario.trabajadorIndex];
+      const horarioItem = document.createElement("div");
+      horarioItem.className = "horario-item";
+      horarioItem.innerHTML = `
+        <span>${trabajador.nombre} ${trabajador.apellido} - Entrada: ${horario.entrada} - Salida: ${horario.salida}</span>
+        <div>
+          <button class="editar" onclick="editarHorario(${index})">Editar</button>
+          <button class="eliminar" onclick="eliminarHorario(${index})">Eliminar</button>
+        </div>
+      `;
+      listaHorarios.appendChild(horarioItem);
+    });
+  }
+
+  // Eliminar horario
+  window.eliminarHorario = function (index) {
+    horarios.splice(index, 1); // Eliminar el horario del array
+    localStorage.setItem("horarios", JSON.stringify(horarios)); // Actualizar localStorage
+    cargarHorarios(); // Recargar la lista
+  };
+
+  // Editar horario
+  window.editarHorario = function (index) {
+    const horario = horarios[index];
+    const trabajadorIndex = horario.trabajadorIndex;
+    const entrada = horario.entrada;
+    const salida = horario.salida;
+
+    // Rellenar el formulario con los datos actuales
+    document.getElementById("trabajador").value = trabajadorIndex;
+    document.getElementById("entrada").value = entrada.replace(" ", "T");
+    document.getElementById("salida").value = salida.replace(" ", "T");
+
+    // Eliminar el horario actual
+    eliminarHorario(index);
+  };
+
   // Registrar Trabajador
   formTrabajador.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -94,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     horarios.push({ trabajadorIndex, entrada: entradaFormateada, salida: salidaFormateada });
     localStorage.setItem("horarios", JSON.stringify(horarios));
+    cargarHorarios();
     formHorario.reset();
   });
 
@@ -185,35 +228,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inicializar
   cargarTrabajadores();
-// Función para entrar en pantalla completa
-function entrarPantallaCompleta() {
-  const elemento = document.documentElement; // Toma el elemento raíz (todo el documento)
-  if (elemento.requestFullscreen) {
-    elemento.requestFullscreen();
-  } else if (elemento.mozRequestFullScreen) { // Firefox
-    elemento.mozRequestFullScreen();
-  } else if (elemento.webkitRequestFullscreen) { // Chrome, Safari y Opera
-    elemento.webkitRequestFullscreen();
-  } else if (elemento.msRequestFullscreen) { // IE/Edge
-    elemento.msRequestFullscreen();
-  }
-}
-
-// Función para salir de pantalla completa
-function salirPantallaCompleta() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.mozCancelFullScreen) { // Firefox
-    document.mozCancelFullScreen();
-  } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) { // IE/Edge
-    document.msExitFullscreen();
-  }
-}
-
-// Entrar en pantalla completa al cargar la aplicación
-document.addEventListener("DOMContentLoaded", () => {
-  entrarPantallaCompleta();
-});
+  cargarHorarios();
 });
