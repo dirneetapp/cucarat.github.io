@@ -185,4 +185,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inicializar
   cargarTrabajadores();
+// Función para entrar en pantalla completa
+function entrarPantallaCompleta() {
+  const elemento = document.documentElement; // Toma el elemento raíz (todo el documento)
+  if (elemento.requestFullscreen) {
+    elemento.requestFullscreen();
+  } else if (elemento.mozRequestFullScreen) { // Firefox
+    elemento.mozRequestFullScreen();
+  } else if (elemento.webkitRequestFullscreen) { // Chrome, Safari y Opera
+    elemento.webkitRequestFullscreen();
+  } else if (elemento.msRequestFullscreen) { // IE/Edge
+    elemento.msRequestFullscreen();
+  }
+}
+
+// Función para salir de pantalla completa
+function salirPantallaCompleta() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) { // Firefox
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { // IE/Edge
+    document.msExitFullscreen();
+  }
+}
+
+// Entrar en pantalla completa al cargar la aplicación
+document.addEventListener("DOMContentLoaded", () => {
+  entrarPantallaCompleta();
+});
 });
