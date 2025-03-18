@@ -74,6 +74,7 @@ form {
     gap: 10px;
     margin-bottom: 1rem;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 input, select {
@@ -82,7 +83,7 @@ input, select {
     border-radius: 5px;
     font-size: 1rem;
     flex: 1;
-    min-width: 200px;
+    min-width: 0; /* Evita que los inputs se desborden */
 }
 
 .btn {
@@ -92,6 +93,8 @@ input, select {
     cursor: pointer;
     transition: all 0.3s;
     font-weight: 500;
+    min-width: 80px; /* Tamaño mínimo para clics en móvil */
+    touch-action: manipulation; /* Mejora la interacción en táctil */
 }
 
 .btn-primary {
@@ -114,11 +117,13 @@ input, select {
     gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    justify-content: flex-start;
 }
 
 .list-container {
     max-height: 300px;
     overflow-y: auto;
+    width: 100%;
 }
 
 .worker-item, .time-item {
@@ -130,10 +135,19 @@ input, select {
     background: #fafafa;
     margin-bottom: 5px;
     border-radius: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .time-item span {
     flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.worker-item button, .time-item button {
+    position: relative;
+    z-index: 1; /* Asegura que los botones estén sobre otros elementos */
 }
 
 .report-table table {
@@ -171,27 +185,62 @@ footer {
     .header-content {
         flex-direction: column;
         gap: 10px;
+        text-align: center;
     }
 
     form {
         flex-direction: column;
+        gap: 15px;
     }
 
     input, select, .btn {
         width: 100%;
+        min-width: 0;
+    }
+
+    .btn {
+        padding: 0.8rem;
+        font-size: 1rem;
     }
 
     .worker-item, .time-item {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        align-items: stretch;
+        gap: 10px;
+        padding: 1rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .report-table {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Mejora el scroll en móviles */
     }
 
     table {
         font-size: 0.9rem;
+        min-width: 100%;
+    }
+
+    .worker-item button, .time-item button {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        padding: 1rem;
     }
 }
