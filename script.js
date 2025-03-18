@@ -56,9 +56,34 @@ function updateWorkersList() {
     list.innerHTML = workers.map(worker => `
         <div class="worker-item">
             <span>${worker.name} | N.I.F.: ${worker.nif} | Afiliación: ${worker.affiliation} | ${worker.monthYear}</span>
-            <button class="btn btn-secondary" onclick="deleteWorker(${worker.id})">Eliminar</button>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="editWorker(${worker.id})">Editar</button>
+                <button class="btn btn-secondary" onclick="deleteWorker(${worker.id})">Eliminar</button>
+            </div>
         </div>
     `).join('');
+}
+
+function editWorker(id) {
+    const worker = workers.find(w => w.id === id);
+    if (!worker) return;
+
+    const name = prompt('Nombre del trabajador:', worker.name);
+    const nif = prompt('N.I.F.:', worker.nif);
+    const affiliation = prompt('Nº Afiliación:', worker.affiliation);
+    const monthYear = prompt('Mes y Año (YYYY-MM):', worker.monthYear);
+
+    if (name && nif && affiliation && monthYear) {
+        worker.name = name;
+        worker.nif = nif;
+        worker.affiliation = affiliation;
+        worker.monthYear = monthYear;
+        localStorage.setItem('workers', JSON.stringify(workers));
+        updateWorkersList();
+        updateWorkerSelect();
+    } else {
+        alert('Todos los campos son obligatorios. No se guardaron los cambios.');
+    }
 }
 
 function deleteWorker(id) {
@@ -268,7 +293,7 @@ function printReport() {
                 .total-row { background: #ecf0f1; font-weight: bold; }
                 .signature { margin-top: 20px; display: flex; justify-content: space-between; font-style: italic; max-width: 1000px; margin-left: auto; margin-right: auto; }
                 p { margin-top: 20px; }
-                button { display: none; } /* Oculta el botón al imprimir */
+                button { display: none; }
             </style>
         </head>
         <body>
@@ -289,7 +314,6 @@ document.getElementById('exportPDF').addEventListener('click', () => {
         alert('Por favor, genera el informe primero.');
         return;
     }
-    // Eliminar temporalmente el botón de imprimir para el PDF
     const printButton = element.querySelector('button');
     if (printButton) printButton.style.display = 'none';
     
@@ -302,7 +326,7 @@ document.getElementById('exportPDF').addEventListener('click', () => {
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
     html2pdf().set(opt).from(element).save().then(() => {
-        if (printButton) printButton.style.display = 'block'; // Restaurar el botón
+        if (printButton) printButton.style.display = 'block';
     });
 });
 
@@ -339,7 +363,7 @@ document.getElementById('emailReport').addEventListener('click', () => {
 
     const element = document.getElementById('reportContainer');
     const printButton = element.querySelector('button');
-    if (printButton) printButton.style.display = 'none'; // Ocultar botón para el PDF
+    if (printButton) printButton.style.display = 'none';
 
     const opt = {
         margin: [0.5, 0.5, 0.5, 0.5],
@@ -351,7 +375,7 @@ document.getElementById('emailReport').addEventListener('click', () => {
     };
     
     html2pdf().set(opt).from(element).save().then(() => {
-        if (printButton) printButton.style.display = 'block'; // Restaurar botón
+        if (printButton) printButton.style.display = 'block';
         const subject = encodeURIComponent(`Informe Mensual - ${company.name}`);
         const body = encodeURIComponent(`
             Informe Mensual de Horarios - ${company.name}
@@ -373,7 +397,7 @@ document.getElementById('emailReport').addEventListener('click', () => {
     }).catch(err => {
         console.error('Error al generar PDF:', err);
         alert('Error al generar el PDF. Intenta de nuevo.');
-        if (printButton) printButton.style.display = 'block'; // Restaurar en caso de error
+        if (printButton) printButton.style.display = 'block';
     });
 });
 

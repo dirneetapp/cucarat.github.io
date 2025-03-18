@@ -141,10 +141,15 @@ input, select {
     gap: 10px;
 }
 
-.time-item span, .worker-item span {
+.worker-item span, .time-item span {
     flex: 1;
     min-width: 0;
     word-break: break-word;
+}
+
+.worker-item .button-group, .time-item .button-group {
+    display: flex;
+    gap: 5px;
 }
 
 .worker-item button, .time-item button {
