@@ -1,263 +1,225 @@
-class TimeMaster {
-    constructor() {
-        this.trabajadores = JSON.parse(localStorage.getItem('trabajadores')) || [];
-        this.horarios = JSON.parse(localStorage.getItem('horarios')) || [];
-        this.init();
+// Inicialización
+let workers = JSON.parse(localStorage.getItem('workers')) || [];
+let timeRecords = JSON.parse(localStorage.getItem('timeRecords')) || [];
+let company = JSON.parse(localStorage.getItem('company')) || { name: 'Sin empresa configurada' };
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateCompanyInfo();
+    updateWorkersList();
+    updateTimeRecords();
+    updateWorkerSelect();
+});
+
+// Configuración Empresa
+document.getElementById('companyForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    company.name = document.getElementById('companyName').value;
+    localStorage.setItem('company', JSON.stringify(company));
+    updateCompanyInfo();
+    e.target.reset();
+});
+
+function updateCompanyInfo() {
+    document.getElementById('companyInfo').textContent = company.name;
+}
+
+// Gestión de Trabajadores
+document.getElementById('workerForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('workerName').value;
+    workers.push({ id: Date.now(), name });
+    localStorage.setItem('workers', JSON.stringify(workers));
+    updateWorkersList();
+    updateWorkerSelect();
+    e.target.reset();
+});
+
+function updateWorkersList() {
+    const list = document.getElementById('workersList');
+    list.innerHTML = workers.map(worker => `
+        <div class="worker-item">
+            <span>${worker.name}</span>
+            <button class="btn btn-secondary" onclick="deleteWorker(${worker.id})">Eliminar</button>
+        </div>
+    `).join('');
+}
+
+function deleteWorker(id) {
+    workers = workers.filter(w => w.id !== id);
+    timeRecords = timeRecords.filter(r => r.workerId !== id);
+    localStorage.setItem('workers', JSON.stringify(workers));
+    localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
+    updateWorkersList();
+    updateWorkerSelect();
+    updateTimeRecords();
+}
+
+// Registro de Horarios
+document.getElementById('timeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const workerId = parseInt(document.getElementById('workerSelect').value);
+    const entryTime = new Date(document.getElementById('entryTime').value);
+    const exitTime = new Date(document.getElementById('exitTime').value);
+    
+    if (exitTime <= entryTime) {
+        alert('La hora de salida debe ser posterior a la de entrada');
+        return;
     }
 
-    init() {
-        this.cacheElements();
-        this.setupEventListeners();
-        this.cargarDatos();
-        this.setupTheme();
-    }
+    timeRecords.push({
+        id: Date.now(),
+        workerId,
+        entryTime: entryTime.toISOString(),
+        exitTime: exitTime.toISOString()
+    });
+    
+    localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
+    updateTimeRecords();
+    e.target.reset();
+});
 
-    cacheElements() {
-        this.elements = {
-            formTrabajador: document.getElementById('formTrabajador'),
-            nombre: document.getElementById('nombre'),
-            apellido: document.getElementById('apellido'),
-            formHorario: document.getElementById('formHorario'),
-            selectTrabajador: document.getElementById('trabajador'),
-            entrada: document.getElementById('entrada'),
-            salida: document.getElementById('salida'),
-            listaTrabajadores: document.getElementById('listaTrabajadores'),
-            listaHorarios: document.getElementById('listaHorarios'),
-            informe: document.getElementById('informe'),
-            contadores: {
-                trabajadores: document.getElementById('contadorTrabajadores'),
-                horarios: document.getElementById('contadorHorarios')
-            }
-        };
-    }
+function updateWorkerSelect() {
+    const select = document.getElementById('workerSelect');
+    select.innerHTML = '<option value="">Selecciona trabajador</option>' + 
+        workers.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+}
 
-    setupEventListeners() {
-        this.elements.formTrabajador.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.registrarTrabajador();
-        });
-
-        this.elements.formHorario.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.registrarHorario();
-        });
-
-        document.getElementById('generarInforme').addEventListener('click', () => this.generarInforme());
-        document.getElementById('exportarPDF').addEventListener('click', () => this.exportarPDF());
-        document.getElementById('exportarExcel').addEventListener('click', () => this.exportarExcel());
-    }
-
-    // CORE FUNCTIONALITY
-    registrarTrabajador() {
-        const nombre = this.elements.nombre.value.trim();
-        const apellido = this.elements.apellido.value.trim();
-
-        if (!nombre || !apellido) {
-            this.mostrarError('Complete todos los campos');
-            return;
-        }
-
-        this.trabajadores.push({ nombre, apellido });
-        this.actualizarDatos();
-        this.elements.formTrabajador.reset();
-    }
-
-    registrarHorario() {
-        const trabajadorIndex = this.elements.selectTrabajador.value;
-        const entrada = new Date(this.elements.entrada.value);
-        const salida = new Date(this.elements.salida.value);
-
-        if (!trabajadorIndex) {
-            this.mostrarError('Seleccione un trabajador');
-            return;
-        }
-
-        try {
-            const horas = this.calcularHoras(entrada, salida);
-            
-            this.horarios.push({
-                trabajadorIndex,
-                entrada: entrada.toISOString(),
-                salida: salida.toISOString(),
-                horas
-            });
-            
-            this.actualizarDatos();
-            this.elements.formHorario.reset();
-        } catch (error) {
-            this.mostrarError(error.message);
-        }
-    }
-
-    calcularHoras(entrada, salida) {
-        const diff = salida - entrada;
-        if (diff < 0) throw new Error('La hora de salida debe ser posterior');
-        return (diff / 3600000).toFixed(2); // Horas con 2 decimales
-    }
-
-    // DATA MANAGEMENT
-    actualizarDatos() {
-        localStorage.setItem('trabajadores', JSON.stringify(this.trabajadores));
-        localStorage.setItem('horarios', JSON.stringify(this.horarios));
-        this.cargarDatos();
-    }
-
-    cargarDatos() {
-        this.cargarTrabajadores();
-        this.cargarHorarios();
-        this.actualizarContadores();
-    }
-
-    cargarTrabajadores() {
-        this.elements.selectTrabajador.innerHTML = '<option value="">Seleccionar...</option>';
-        this.trabajadores.forEach((t, i) => {
-            this.elements.selectTrabajador.innerHTML += `
-                <option value="${i}">${t.nombre} ${t.apellido}</option>
-            `;
-        });
-
-        this.elements.listaTrabajadores.innerHTML = this.trabajadores
-            .map((t, i) => `
-                <li class="list-item">
-                    <span>${t.nombre} ${t.apellido}</span>
-                    <button class="btn-danger" onclick="app.eliminarTrabajador(${i})">🗑</button>
-                </li>
-            `).join('');
-    }
-
-    cargarHorarios() {
-        this.elements.listaHorarios.innerHTML = this.horarios
-            .map((h, i) => {
-                const t = this.trabajadores[h.trabajadorIndex];
-                return `
-                    <div class="list-item">
-                        <div>
-                            <strong>${t.nombre} ${t.apellido}</strong>
-                            <div class="text-sm">
-                                ${new Date(h.entrada).toLocaleString()} - 
-                                ${new Date(h.salida).toLocaleString()}
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <button class="btn-danger" onclick="app.eliminarHorario(${i})">🗑</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-    }
-
-    // REPORTING
-    generarInforme() {
-        const reportData = this.horarios.reduce((acc, h) => {
-            const trabajador = this.trabajadores[h.trabajadorIndex];
-            const key = `${trabajador.nombre} ${trabajador.apellido}`;
-            
-            if (!acc[key]) acc[key] = 0;
-            acc[key] += parseFloat(h.horas);
-            
-            return acc;
-        }, {});
-
-        this.elements.informe.innerHTML = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>Trabajador</th>
-                        <th>Total Horas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${Object.entries(reportData).map(([nombre, horas]) => `
-                        <tr>
-                            <td>${nombre}</td>
-                            <td>${horas.toFixed(2)}h</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+function updateTimeRecords() {
+    const records = document.getElementById('timeRecords');
+    records.innerHTML = timeRecords.map(record => {
+        const worker = workers.find(w => w.id === record.workerId);
+        const entry = formatDateTime(new Date(record.entryTime));
+        const exit = formatDateTime(new Date(record.exitTime));
+        return `
+            <div class="time-item">
+                <span>${worker?.name || 'Trabajador eliminado'} - Entrada: ${entry} - Salida: ${exit}</span>
+                <div>
+                    <button class="btn btn-secondary" onclick="editTimeRecord(${record.id})">Editar</button>
+                    <button class="btn btn-secondary" onclick="deleteTimeRecord(${record.id})">Eliminar</button>
+                </div>
+            </div>
         `;
-    }
+    }).join('');
+}
 
-    exportarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+function deleteTimeRecord(id) {
+    timeRecords = timeRecords.filter(r => r.id !== id);
+    localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
+    updateTimeRecords();
+}
+
+function editTimeRecord(id) {
+    const record = timeRecords.find(r => r.id === id);
+    if (record) {
+        const entry = prompt('Nueva hora de entrada (dd/mm/yyyy hh:mm)', formatDateTime(new Date(record.entryTime)));
+        const exit = prompt('Nueva hora de salida (dd/mm/yyyy hh:mm)', formatDateTime(new Date(record.exitTime)));
         
-        doc.text("Informe de Horarios - TimeMaster Pro", 10, 10);
-        
-        const headers = [["Trabajador", "Horas Trabajadas"]];
-        const data = Object.entries(this.generarDatosInforme()).map(([nombre, horas]) => [
-            nombre,
-            `${horas.toFixed(2)}h`
-        ]);
-
-        doc.autoTable({
-            head: headers,
-            body: data,
-            startY: 20,
-            styles: { fontSize: 10 },
-            headStyles: { fillColor: [42, 45, 67] }
-        });
-
-        doc.save('informe-horarios.pdf');
-    }
-
-    exportarExcel() {
-        const data = Object.entries(this.generarDatosInforme()).map(([nombre, horas]) => ({
-            Trabajador: nombre,
-            'Horas Trabajadas': horas
-        }));
-
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Informe");
-        XLSX.writeFile(workbook, "informe-horarios.xlsx");
-    }
-
-    generarDatosInforme() {
-        return this.horarios.reduce((acc, h) => {
-            const t = this.trabajadores[h.trabajadorIndex];
-            const key = `${t.nombre} ${t.apellido}`;
-            acc[key] = (acc[key] || 0) + parseFloat(h.horas);
-            return acc;
-        }, {});
-    }
-
-    // UTILITIES
-    actualizarContadores() {
-        this.elements.contadores.trabajadores.textContent = this.trabajadores.length;
-        this.elements.contadores.horarios.textContent = this.horarios.length;
-    }
-
-    mostrarError(mensaje) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = mensaje;
-        document.querySelector('.container').prepend(errorDiv);
-        setTimeout(() => errorDiv.remove(), 3000);
-    }
-
-    setupTheme() {
-        const theme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-    }
-
-    toggleTheme() {
-        const newTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-    }
-
-    eliminarTrabajador(index) {
-        this.trabajadores.splice(index, 1);
-        this.actualizarDatos();
-    }
-
-    eliminarHorario(index) {
-        this.horarios.splice(index, 1);
-        this.actualizarDatos();
+        if (entry && exit) {
+            record.entryTime = parseDateTime(entry).toISOString();
+            record.exitTime = parseDateTime(exit).toISOString();
+            localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
+            updateTimeRecords();
+        }
     }
 }
 
-// Inicialización
-const app = new TimeMaster();
-window.app = app;
+// Informe Semanal
+document.getElementById('generateReport').addEventListener('click', generateReport);
+
+function generateReport() {
+    const reportContainer = document.getElementById('reportContainer');
+    let html = `<h3>Informe Semanal - ${company.name}</h3>
+        <table>
+            <tr>
+                <th>Trabajador</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Horas</th>
+            </tr>`;
+    
+    const totals = {};
+    timeRecords.forEach(record => {
+        const worker = workers.find(w => w.id === record.workerId);
+        const entry = new Date(record.entryTime);
+        const exit = new Date(record.exitTime);
+        const hours = (exit - entry) / (1000 * 60 * 60);
+        const workerName = worker?.name || 'Trabajador eliminado';
+        
+        html += `<tr>
+            <td>${workerName}</td>
+            <td>${formatDateTime(entry)}</td>
+            <td>${formatDateTime(exit)}</td>
+            <td>${hours.toFixed(2)}</td>
+        </tr>`;
+        
+        totals[workerName] = (totals[workerName] || 0) + hours;
+    });
+    
+    for (const [worker, total] of Object.entries(totals)) {
+        html += `<tr class="total-row">
+            <td colspan="3">Total ${worker}</td>
+            <td>${total.toFixed(2)}</td>
+        </tr>`;
+    }
+    
+    html += '</table>';
+    reportContainer.innerHTML = html;
+    return html;
+}
+
+// Exportación
+document.getElementById('exportPDF').addEventListener('click', () => {
+    const element = document.getElementById('reportContainer');
+    html2pdf()
+        .set({ filename: `informe_${company.name}.pdf` })
+        .from(element)
+        .save();
+});
+
+document.getElementById('exportExcel').addEventListener('click', () => {
+    const data = [['Trabajador', 'Entrada', 'Salida', 'Horas']];
+    timeRecords.forEach(record => {
+        const worker = workers.find(w => w.id === record.workerId);
+        data.push([
+            worker?.name || 'Trabajador eliminado',
+            formatDateTime(new Date(record.entryTime)),
+            formatDateTime(new Date(record.exitTime)),
+            (((new Date(record.exitTime) - new Date(record.entryTime)) / (1000 * 60 * 60)).toFixed(2))
+        ]);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Informe');
+    XLSX.writeFile(wb, `informe_${company.name}.xlsx`);
+});
+
+document.getElementById('emailReport').addEventListener('click', () => {
+    generateReport();
+    const reportHtml = document.getElementById('reportContainer').innerHTML;
+    const subject = encodeURIComponent(`Informe Semanal - ${company.name}`);
+    const body = encodeURIComponent(`
+        Informe Semanal de Horarios - ${company.name}
+        
+        ${reportHtml.replace(/<[^>]+>/g, (tag) => {
+            if (tag.includes('table')) return '\n\n';
+            if (tag.includes('tr')) return '\n';
+            if (tag.includes('td')) return '\t';
+            return '';
+        })}
+    `);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+});
+
+// Funciones auxiliares
+function formatDateTime(date) {
+    const pad = n => n.toString().padStart(2, '0');
+    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function parseDateTime(str) {
+    const [date, time] = str.split(' ');
+    const [day, month, year] = date.split('/').map(Number);
+    const [hours, minutes] = time.split(':').map(Number);
+    return new Date(year, month - 1, day, hours, minutes);
+}

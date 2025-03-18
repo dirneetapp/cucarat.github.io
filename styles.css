@@ -1,113 +1,246 @@
-body {
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
-    padding: 20px;
-    background-color: #f0f2f5;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #2c3e50;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#companyInfo {
+    font-size: 1.1rem;
+    font-style: italic;
 }
 
 .container {
-    max-width: 1000px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
 }
 
-h1, h2 {
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+h2 {
     color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 form {
-    margin-bottom: 30px;
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
-input, select, button {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
+input, select {
+    padding: 0.7rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    flex: 1;
+    min-width: 0; /* Evita que los inputs se desborden */
 }
 
-button {
-    background-color: #3498db;
-    color: white;
+.btn {
+    padding: 0.7rem 1.2rem;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    font-weight: 500;
+    min-width: 80px; /* Tamaño mínimo para clics en móvil */
+    touch-action: manipulation; /* Mejora la interacción en táctil */
 }
 
-button:hover {
-    background-color: #2980b9;
+.btn-primary {
+    background: #2980b9;
+    color: white;
 }
 
-#listaTrabajadores {
-    list-style: none;
-    padding: 0;
+.btn-secondary {
+    background: #7f8c8d;
+    color: white;
 }
 
-#listaTrabajadores li {
+.btn:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    justify-content: flex-start;
+}
+
+.list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.worker-item, .time-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    margin: 10px 0;
-    background: #f8f9fa;
-    border-radius: 6px;
+    padding: 0.8rem;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.horario-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    margin: 10px 0;
-    background: #f8f9fa;
-    border-radius: 6px;
+.time-item span {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
 }
 
-/* Estilos para la tabla de informe */
-#informe table {
+.worker-item button, .time-item button {
+    position: relative;
+    z-index: 1; /* Asegura que los botones estén sobre otros elementos */
+}
+
+.report-table table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 1rem;
 }
 
-#informe th, #informe td {
-    padding: 12px;
+th, td {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
     text-align: left;
-    border-bottom: 1px solid #ddd;
 }
 
-#informe th {
-    background-color: #3498db;
+th {
+    background: #2c3e50;
     color: white;
-}
-
-#informe tr:hover {
-    background-color: #f5f5f5;
+    font-weight: 600;
 }
 
 .total-row {
+    background: #ecf0f1;
     font-weight: bold;
-    background-color: #ecf0f1;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: #7f8c8d;
+    background: #fff;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
 
 @media (max-width: 768px) {
-    .container {
-        padding: 10px;
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
     }
-    
-    input, select, button {
-        padding: 10px;
+
+    form {
+        flex-direction: column;
+        gap: 15px;
     }
-    
-    #informe table {
-        font-size: 14px;
+
+    input, select, .btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .btn {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .worker-item, .time-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 1rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .report-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Mejora el scroll en móviles */
+    }
+
+    table {
+        font-size: 0.9rem;
+        min-width: 100%;
+    }
+
+    .worker-item button, .time-item button {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        padding: 1rem;
     }
 }
