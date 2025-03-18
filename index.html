@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Gestión de Control Horario</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-clock"></i> Control Horario</h1>
+            <div id="companyInfo"></div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="company-section card">
+            <h2><i class="fas fa-building"></i> Empresa</h2>
+            <form id="companyForm">
+                <input type="text" id="companyName" placeholder="Nombre de la empresa" required>
+                <input type="text" id="companyCif" placeholder="C.I.F./N.I.F." required>
+                <input type="text" id="companyCenter" placeholder="Centro de Trabajo" required>
+                <input type="text" id="companyCcc" placeholder="C.C.C." required>
+                <button type="submit" class="btn btn-primary">Guardar Empresa</button>
+            </form>
+        </section>
+
+        <section class="workers-section card">
+            <h2><i class="fas fa-users"></i> Trabajadores</h2>
+            <form id="workerForm">
+                <input type="text" id="workerName" placeholder="Nombre del trabajador" required>
+                <input type="text" id="workerNif" placeholder="N.I.F." required>
+                <input type="text" id="workerAffiliation" placeholder="Nº Afiliación" required>
+                <input type="month" id="workerMonthYear" required>
+                <button type="submit" class="btn btn-primary">Añadir</button>
+            </form>
+            <div id="workersList" class="list-container"></div>
+        </section>
+
+        <section class="time-section card">
+            <h2><i class="fas fa-calendar-check"></i> Registro Horario</h2>
+            <form id="timeForm">
+                <select id="workerSelect" required></select>
+                <input type="date" id="recordDate" required>
+                <input type="time" id="morningEntry" placeholder="Entrada Mañana">
+                <input type="time" id="morningExit" placeholder="Salida Mañana">
+                <input type="time" id="afternoonEntry" placeholder="Entrada Tarde">
+                <input type="time" id="afternoonExit" placeholder="Salida Tarde">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+            <div id="timeRecords" class="list-container"></div>
+        </section>
+
+        <section class="report-section card">
+            <h2><i class="fas fa-file-alt"></i> Informe Mensual</h2>
+            <div class="button-group">
+                <button id="generateReport" class="btn btn-primary">Generar</button>
+                <button id="exportPDF" class="btn btn-secondary">PDF</button>
+                <button id="exportExcel" class="btn btn-secondary">Excel</button>
+                <button id="emailReport" class="btn btn-secondary">Email</button>
+            </div>
+            <div id="reportContainer" class="report-table"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 xAI - Todos los derechos reservados</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
