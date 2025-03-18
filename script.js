@@ -76,18 +76,31 @@ document.getElementById('timeForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const workerId = parseInt(document.getElementById('workerSelect').value);
     const date = document.getElementById('recordDate').value;
-    const morningEntry = document.getElementById('morningEntry').value;
-    const morningExit = document.getElementById('morningExit').value;
-    const afternoonEntry = document.getElementById('afternoonEntry').value;
-    const afternoonExit = document.getElementById('afternoonExit').value;
+    const morningEntry = document.getElementById('morningEntry').value || '';
+    const morningExit = document.getElementById('morningExit').value || '';
+    const afternoonEntry = document.getElementById('afternoonEntry').value || '';
+    const afternoonExit = document.getElementById('afternoonExit').value || '';
 
-    if ((morningEntry && !morningExit) || (!morningEntry && morningExit) || 
-        (afternoonEntry && !afternoonExit) || (!afternoonEntry && afternoonExit)) {
-        alert('Debes completar tanto entrada como salida para cada turno.');
+    // Validación: al menos un turno debe estar completo
+    const hasMorning = morningEntry && morningExit;
+    const hasAfternoon = afternoonEntry && afternoonExit;
+    if (!hasMorning && !hasAfternoon) {
+        alert('Debes completar al menos un turno (mañana o tarde) con entrada y salida.');
         return;
     }
 
-    timeRecords.push({
+    // Validar que las salidas sean posteriores a las entradas
+    if (hasMorning && morningEntry >= morningExit) {
+        alert('La salida de la mañana debe ser posterior a la entrada.');
+        return;
+    }
+    if (hasAfternoon && afternoonEntry >= afternoonExit) {
+        alert('La salida de la tarde debe ser posterior a la entrada.');
+        return;
+    }
+
+    // Crear el registro
+    const record = {
         id: Date.now(),
         workerId,
         date,
@@ -95,8 +108,9 @@ document.getElementById('timeForm').addEventListener('submit', (e) => {
         morningExit,
         afternoonEntry,
         afternoonExit
-    });
-    
+    };
+
+    timeRecords.push(record);
     localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
     updateTimeRecords();
     e.target.reset();
@@ -113,11 +127,15 @@ function updateTimeRecords() {
     records.innerHTML = timeRecords.map(record => {
         const worker = workers.find(w => w.id === record.workerId);
         const date = record.date;
-        const morning = record.morningEntry ? `Mañana: ${record.morningEntry} - ${record.morningExit}` : '';
-        const afternoon = record.afternoonEntry ? `Tarde: ${record.afternoonEntry} - ${record.afternoonExit}` : '';
+        const morning = record.morningEntry && record.morningExit ? 
+            `Mañana: ${record.morningEntry} - ${record.morningExit}` : '';
+        const afternoon = record.afternoonEntry && record.afternoonExit ? 
+            `Tarde: ${record.afternoonEntry} - ${record.afternoonExit}` : '';
+        const displayText = [morning, afternoon].filter(Boolean).join(' | ');
+        
         return `
             <div class="time-item">
-                <span>${worker?.name || 'Trabajador eliminado'} - ${date} - ${morning} ${afternoon}</span>
+                <span>${worker?.name || 'Trabajador eliminado'} - ${date} - ${displayText || 'Sin horario'}</span>
                 <div>
                     <button class="btn btn-secondary" onclick="deleteTimeRecord(${record.id})">Eliminar</button>
                 </div>
@@ -128,7 +146,7 @@ function updateTimeRecords() {
 
 function deleteTimeRecord(id) {
     timeRecords = timeRecords.filter(r => r.id !== id);
-    localStorage.setItem('timeRecords', JSON.stringify(time onwardsRecords));
+    localStorage.setItem('timeRecords', JSON.stringify(timeRecords));
     updateTimeRecords();
 }
 
