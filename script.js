@@ -177,6 +177,17 @@ document.getElementById('generateReport').addEventListener('click', generateRepo
 
 function generateReport() {
     const reportContainer = document.getElementById('reportContainer');
+    // Obtener la fecha actual (18 de marzo de 2025 según tus instrucciones)
+    const currentDate = new Date('2025-03-18'); // Fecha fija basada en tus instrucciones
+    const day = currentDate.getDate();
+    const monthNames = [
+        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    const month = monthNames[currentDate.getMonth()];
+    const year = currentDate.getFullYear();
+    const formattedDate = `${day} de ${month} de ${year}`;
+
     let html = `
         <h3>Listado Resumen Mensual del Registro de Jornada</h3>
         <div class="header-info">
@@ -268,7 +279,7 @@ function generateReport() {
             <span>Firma de la empresa: ___________________________</span>
             <span>Firma del trabajador: ___________________________</span>
         </div>
-        <p>En ${company.center}, a ___ de ___ de ____</p>
+        <p>En ${company.center}, a ${formattedDate}</p>
         <button class="btn btn-secondary" onclick="printReport()">Imprimir</button>`;
     
     reportContainer.innerHTML = html;
@@ -288,7 +299,7 @@ function printReport() {
                 h3 { margin-bottom: 0.2rem; font-size: 1rem; }
                 .header-info { display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 0.6rem; }
                 table { width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 0.65rem; max-width: 1000px; }
-                th, td { padding: 0.1rem; border: 1px solid #ddd; text-align: center; } /* Reducido */
+                th, td { padding: 0.1rem; border: 1px solid #ddd; text-align: center; }
                 th { background: #2c3e50; color: white; font-weight: 600; }
                 .total-row { background: #ecf0f1; font-weight: bold; }
                 .signature { margin-top: 0.2rem; display: flex; justify-content: space-between; font-style: italic; font-size: 0.6rem; max-width: 1000px; margin-left: auto; margin-right: auto; }
