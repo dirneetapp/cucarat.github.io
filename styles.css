@@ -161,32 +161,32 @@ input, select {
     width: 100%;
     overflow-x: auto;
     text-align: center;
-    font-size: 0.8rem; /* Reducido para caber en una página */
+    font-size: 0.65rem; /* Reducido para A4 */
 }
 
 .report-table h3 {
     text-align: center;
-    margin-bottom: 0.5rem; /* Reducido */
-    font-size: 1.2rem; /* Reducido */
+    margin-bottom: 0.3rem; /* Reducido */
+    font-size: 1rem; /* Reducido */
 }
 
 .report-table .header-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.5rem; /* Reducido */
-    font-size: 0.7rem; /* Reducido */
+    margin-bottom: 0.3rem; /* Reducido */
+    font-size: 0.6rem; /* Reducido */
 }
 
 .report-table table {
     width: 100%;
     border-collapse: collapse;
     margin: 0 auto;
-    font-size: 0.7rem; /* Reducido */
+    font-size: 0.65rem; /* Reducido */
     max-width: 1000px;
 }
 
 th, td {
-    padding: 0.2rem; /* Reducido para compactar */
+    padding: 0.15rem; /* Reducido para compactar */
     border: 1px solid #ddd;
     text-align: center;
 }
@@ -203,11 +203,11 @@ th {
 }
 
 .signature {
-    margin-top: 0.5rem; /* Reducido */
+    margin-top: 0.3rem; /* Reducido */
     display: flex;
     justify-content: space-between;
     font-style: italic;
-    font-size: 0.7rem; /* Reducido */
+    font-size: 0.6rem; /* Reducido */
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -215,8 +215,8 @@ th {
 
 .report-table p {
     text-align: center;
-    margin-top: 0.5rem; /* Reducido */
-    font-size: 0.7rem; /* Reducido */
+    margin-top: 0.3rem; /* Reducido */
+    font-size: 0.6rem; /* Reducido */
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -264,11 +264,11 @@ th {
     .report-table .header-info {
         flex-direction: column;
         text-align: center;
-        gap: 5px; /* Reducido */
+        gap: 3px; /* Reducido */
     }
 
     th, td {
-        font-size: 0.6rem; /* Reducido aún más */
+        font-size: 0.55rem; /* Reducido aún más */
         padding: 0.1rem; /* Reducido */
     }
 }

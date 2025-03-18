@@ -285,15 +285,16 @@ function printReport() {
             <title>Imprimir Informe</title>
             <style>
                 body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
-                h3 { margin-bottom: 0.5rem; font-size: 1.2rem; }
-                .header-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.7rem; }
-                table { width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 0.7rem; max-width: 1000px; }
-                th, td { padding: 0.2rem; border: 1px solid #ddd; text-align: center; }
+                h3 { margin-bottom: 0.3rem; font-size: 1rem; }
+                .header-info { display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.6rem; }
+                table { width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 0.65rem; max-width: 1000px; }
+                th, td { padding: 0.15rem; border: 1px solid #ddd; text-align: center; }
                 th { background: #2c3e50; color: white; font-weight: 600; }
                 .total-row { background: #ecf0f1; font-weight: bold; }
-                .signature { margin-top: 0.5rem; display: flex; justify-content: space-between; font-style: italic; font-size: 0.7rem; max-width: 1000px; margin-left: auto; margin-right: auto; }
-                p { margin-top: 0.5rem; font-size: 0.7rem; }
+                .signature { margin-top: 0.3rem; display: flex; justify-content: space-between; font-style: italic; font-size: 0.6rem; max-width: 1000px; margin-left: auto; margin-right: auto; }
+                p { margin-top: 0.3rem; font-size: 0.6rem; }
                 button { display: none; }
+                @page { size: A4; margin: 5mm; } /* Ajuste para A4 en impresión */
             </style>
         </head>
         <body>
@@ -318,11 +319,11 @@ document.getElementById('exportPDF').addEventListener('click', () => {
     if (printButton) printButton.style.display = 'none';
     
     const opt = {
-        margin: [0.2, 0.2, 0.2, 0.2], // Márgenes reducidos
+        margin: [0.2, 0.2, 0.2, 0.2], // Márgenes reducidos (en pulgadas, ~5mm)
         filename: `informe_${company.name}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }, // Cambiado a A4
         pagebreak: { mode: ['avoid-all'] } // Evitar saltos de página
     };
     html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
@@ -367,11 +368,11 @@ document.getElementById('emailReport').addEventListener('click', () => {
     if (printButton) printButton.style.display = 'none';
 
     const opt = {
-        margin: [0.2, 0.2, 0.2, 0.2], // Márgenes reducidos
+        margin: [0.2, 0.2, 0.2, 0.2], // Márgenes reducidos (~5mm)
         filename: `informe_${company.name}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }, // Cambiado a A4
         pagebreak: { mode: ['avoid-all'] }
     };
     
