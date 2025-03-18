@@ -1,0 +1,288 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #2c3e50;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#companyInfo {
+    font-size: 1rem;
+    font-style: italic;
+    max-width: 50%;
+    text-align: right;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+input, select {
+    padding: 0.7rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.btn {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    min-width: 80px;
+    touch-action: manipulation;
+}
+
+.btn-primary {
+    background: #2980b9;
+    color: white;
+}
+
+.btn-secondary {
+    background: #7f8c8d;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    justify-content: flex-start;
+}
+
+.list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.worker-item, .time-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.worker-item span, .time-item span {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.worker-item .button-group, .time-item .button-group {
+    display: flex;
+    gap: 5px;
+}
+
+.worker-item button, .time-item button {
+    position: relative;
+    z-index: 1;
+}
+
+.report-table {
+    width: 100%;
+    overflow-x: auto;
+    text-align: center;
+    font-size: 0.8rem; /* Reducido para caber en una página */
+}
+
+.report-table h3 {
+    text-align: center;
+    margin-bottom: 0.5rem; /* Reducido */
+    font-size: 1.2rem; /* Reducido */
+}
+
+.report-table .header-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem; /* Reducido */
+    font-size: 0.7rem; /* Reducido */
+}
+
+.report-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 0.7rem; /* Reducido */
+    max-width: 1000px;
+}
+
+th, td {
+    padding: 0.2rem; /* Reducido para compactar */
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #2c3e50;
+    color: white;
+    font-weight: 600;
+}
+
+.total-row {
+    background: #ecf0f1;
+    font-weight: bold;
+}
+
+.signature {
+    margin-top: 0.5rem; /* Reducido */
+    display: flex;
+    justify-content: space-between;
+    font-style: italic;
+    font-size: 0.7rem; /* Reducido */
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.report-table p {
+    text-align: center;
+    margin-top: 0.5rem; /* Reducido */
+    font-size: 0.7rem; /* Reducido */
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    #companyInfo {
+        text-align: center;
+        max-width: 100%;
+    }
+
+    form {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    input, select, .btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .btn {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .worker-item, .time-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 1rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .report-table .header-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px; /* Reducido */
+    }
+
+    th, td {
+        font-size: 0.6rem; /* Reducido aún más */
+        padding: 0.1rem; /* Reducido */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+}
