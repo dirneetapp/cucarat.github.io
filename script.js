@@ -243,10 +243,43 @@ function generateReport() {
             <span>Firma de la empresa: ___________________________</span>
             <span>Firma del trabajador: ___________________________</span>
         </div>
-        <p>En ${company.center}, a ___ de ___ de ____</p>`;
+        <p>En ${company.center}, a ___ de ___ de ____</p>
+        <button class="btn btn-secondary" onclick="printReport()">Imprimir</button>`;
     
     reportContainer.innerHTML = html;
     return html;
+}
+
+// Función para imprimir el informe
+function printReport() {
+    const reportContent = document.getElementById('reportContainer').innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Imprimir Informe</title>
+            <style>
+                body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; }
+                h3 { margin-bottom: 1rem; }
+                .header-info { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem; }
+                table { width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 0.9rem; max-width: 1000px; }
+                th, td { padding: 0.5rem; border: 1px solid #ddd; text-align: center; }
+                th { background: #2c3e50; color: white; font-weight: 600; }
+                .total-row { background: #ecf0f1; font-weight: bold; }
+                .signature { margin-top: 20px; display: flex; justify-content: space-between; font-style: italic; max-width: 1000px; margin-left: auto; margin-right: auto; }
+                p { margin-top: 20px; }
+                button { display: none; } /* Oculta el botón al imprimir */
+            </style>
+        </head>
+        <body>
+            ${reportContent}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
 }
 
 // Exportación PDF
@@ -256,6 +289,10 @@ document.getElementById('exportPDF').addEventListener('click', () => {
         alert('Por favor, genera el informe primero.');
         return;
     }
+    // Eliminar temporalmente el botón de imprimir para el PDF
+    const printButton = element.querySelector('button');
+    if (printButton) printButton.style.display = 'none';
+    
     const opt = {
         margin: [0.5, 0.5, 0.5, 0.5],
         filename: `informe_${company.name}.pdf`,
@@ -264,7 +301,9 @@ document.getElementById('exportPDF').addEventListener('click', () => {
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
-    html2pdf().set(opt).from(element).toPdf().save();
+    html2pdf().set(opt).from(element).save().then(() => {
+        if (printButton) printButton.style.display = 'block'; // Restaurar el botón
+    });
 });
 
 // Exportación Excel
@@ -299,6 +338,9 @@ document.getElementById('emailReport').addEventListener('click', () => {
     }
 
     const element = document.getElementById('reportContainer');
+    const printButton = element.querySelector('button');
+    if (printButton) printButton.style.display = 'none'; // Ocultar botón para el PDF
+
     const opt = {
         margin: [0.5, 0.5, 0.5, 0.5],
         filename: `informe_${company.name}.pdf`,
@@ -309,6 +351,7 @@ document.getElementById('emailReport').addEventListener('click', () => {
     };
     
     html2pdf().set(opt).from(element).save().then(() => {
+        if (printButton) printButton.style.display = 'block'; // Restaurar botón
         const subject = encodeURIComponent(`Informe Mensual - ${company.name}`);
         const body = encodeURIComponent(`
             Informe Mensual de Horarios - ${company.name}
@@ -330,6 +373,7 @@ document.getElementById('emailReport').addEventListener('click', () => {
     }).catch(err => {
         console.error('Error al generar PDF:', err);
         alert('Error al generar el PDF. Intenta de nuevo.');
+        if (printButton) printButton.style.display = 'block'; // Restaurar en caso de error
     });
 });
 
