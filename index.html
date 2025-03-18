@@ -1,81 +1,60 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeTrack Pro - Gestión Horaria</title>
+    <title>Gestión de Control Horario</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header class="app-header">
-            <h1>🕒 Gestion Horario Pro</h1>
-            <div class="theme-switcher">
-                <button onclick="app.toggleTheme()">🌓 Cambiar Tema</button>
-            </div>
-        </header>
+        <h1>Gestión de Control Horario</h1>
 
-        <main class="dashboard">
-            <section class="management-section">
-                <article class="card">
-                    <h2>👤 Nuevo Trabajador</h2>
-                    <form id="formTrabajador" class="form-grid">
-                        <input type="text" id="nombre" placeholder="Nombre" required>
-                        <input type="text" id="apellido" placeholder="Apellido" required>
-                        <button type="submit">➕ Registrar</button>
-                    </form>
-                </article>
+        <!-- Sección de Trabajadores -->
+        <section>
+            <h2>Registrar Trabajador</h2>
+            <form id="formTrabajador">
+                <input type="text" id="nombre" placeholder="Nombre" required>
+                <input type="text" id="apellido" placeholder="Apellido" required>
+                <button type="submit">Registrar Trabajador</button>
+            </form>
+        </section>
 
-                <article class="card">
-                    <h2>⏱ Nuevo Registro</h2>
-                    <form id="formHorario" class="form-grid">
-                        <select id="trabajador" required>
-                            <option value="">Seleccionar trabajador...</option>
-                        </select>
-                        <div class="time-inputs">
-                            <input type="datetime-local" id="entrada" required>
-                            <input type="datetime-local" id="salida" required>
-                        </div>
-                        <button type="submit">⏺ Registrar Horario</button>
-                    </form>
-                </article>
-            </section>
+        <!-- Lista de Trabajadores -->
+        <section>
+            <h2>Trabajadores Registrados</h2>
+            <ul id="listaTrabajadores"></ul>
+        </section>
 
-            <section class="data-section">
-                <article class="card">
-                    <div class="card-header">
-                        <h2>👥 Lista de Trabajadores</h2>
-                        <span class="badge" id="contadorTrabajadores">0</span>
-                    </div>
-                    <ul id="listaTrabajadores" class="data-list"></ul>
-                </article>
+        <!-- Registro de Horario -->
+        <section>
+            <h2>Registrar Horario</h2>
+            <form id="formHorario">
+                <select id="trabajador" required>
+                    <option value="">Seleccione trabajador</option>
+                </select>
+                <input type="datetime-local" id="entrada" required>
+                <input type="datetime-local" id="salida" required>
+                <button type="submit">Registrar Horario</button>
+            </form>
+        </section>
 
-                <article class="card">
-                    <div class="card-header">
-                        <h2>📅 Registros Horarios</h2>
-                        <span class="badge" id="contadorHorarios">0</span>
-                    </div>
-                    <div id="listaHorarios" class="data-list"></div>
-                </article>
-            </section>
+        <!-- Horarios Registrados -->
+        <section>
+            <h2>Registros de Horarios</h2>
+            <div id="listaHorarios"></div>
+        </section>
 
-            <section class="reports-section">
-                <article class="card">
-                    <div class="card-header">
-                        <h2>📊 Informe Analítico</h2>
-                        <div class="actions">
-                            <button id="generarInforme" class="btn-primary">🔄 Generar</button>
-                            <button id="exportarPDF" class="btn-secondary">📄 PDF</button>
-                            <button id="exportarExcel" class="btn-secondary">📁 Excel</button>
-                        </div>
-                    </div>
-                    <div id="informe" class="report-container"></div>
-                </article>
-            </section>
-        </main>
+        <!-- Informe Semanal -->
+        <section>
+            <h2>Informe Semanal</h2>
+            <button id="generarInforme">Generar Informe</button>
+            <button id="exportarPDF">Exportar PDF</button>
+            <button id="exportarExcel">Exportar Excel</button>
+            <div id="informe"></div>
+        </section>
     </div>
 
     <script src="script.js"></script>
